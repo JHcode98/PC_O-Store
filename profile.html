@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -26,6 +26,11 @@
             padding: 1rem;
             text-align: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative; /* Add positioning context */
+        }
+        .header h1 {
+            margin: 0; /* Remove default margin */
+            display: inline-block; /* Allows width to adjust to content */
         }
         .container {
             max-width: 600px;
@@ -66,40 +71,8 @@
             width: 100%;
         }
 
-        /* Header Navigation Styles */
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 600px;
-            margin: auto;
-            padding: 0 1rem;
-        }
-
-        .header-nav {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: var(--primary-color);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: none;
-            border: none;
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 5px;
-            font-family: inherit;
-        }
-
-        .nav-link:hover {
-            background-color: rgba(0,0,0,0.05);
+        .header a {
+             margin-top: 1rem;
         }
 
         .btn-logout {
@@ -111,6 +84,55 @@
             .header h1 { font-size: 1.1rem; }
             .nav-link { font-size: 1.2rem; padding: 0.4rem; }
             .header-container { padding: 0 0.5rem; }
+              #sidebarToggle {
+                top: 1rem;
+                left: 1rem;
+            }
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px; /* Initially hidden */
+            width: 250px;
+            height: 100%;
+            background: var(--card-bg);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .sidebar.active {
+            left: 0; /* Slide in when active */
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+        #sidebarToggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            z-index: 1001;
+            background: var(--card-bg);
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: var(--shadow);
+            display: flex;
         }
     </style>
 </head>
@@ -137,27 +159,24 @@
         }
     </script>
 
+       <div id="sidebarToggle">☰</div>
+
+    <div class="sidebar">
+        <ul>
+            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i>Profile</a></li>
+             <li><a href="settings.html"><i class="fas fa-cog"></i>Settings</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </div>
+
     <header class="header">
         <div class="header-container">
             <h1>Admin Profile</h1>
-            <nav class="header-nav">
-                <a href="index.html" class="nav-link" title="Dashboard">
-                    <i class="fas fa-tachometer-alt"></i> <span class="nav-text">Dashboard</span>
-                </a>
-                <a href="profile.html" class="nav-link" title="Profile">
-                    <i class="fas fa-user"></i> <span class="nav-text">Profile</span>
-                </a>
-                <a href="settings.html" class="nav-link" title="Settings">
-                    <i class="fas fa-cog"></i> <span class="nav-text">Settings</span>
-                </a>
-                <button onclick="logout()" class="nav-link btn-logout" title="Logout">
-                    <i class="fas fa-sign-out-alt"></i> <span class="nav-text">Logout</span>
-                </button>
-            </nav>
         </div>
     </header>
 
-    <div class="container">
         <div class="profile-card">
             <h2>Update Profile</h2>
             <form onsubmit="updateProfile(event)">
@@ -172,7 +191,6 @@
                 <button type="submit" class="btn-save">Save Changes</button>
             </form>
         </div>
-    </div>
 
     <script>
         // Load saved values
@@ -188,5 +206,20 @@
             alert("Profile updated successfully!");
         }
     </script>
+
+       <script>
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                const sidebar = document.querySelector('.sidebar');
+
+                // Toggle the sidebar's active class
+                sidebar.classList.toggle('active');
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.sidebar') && !event.target.closest('#sidebarToggle')) {
+                    document.querySelector('.sidebar').classList.remove('active');
+                }
+            });
+        </script>
 </body>
 </html>
