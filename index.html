@@ -6,6 +6,7 @@
     <title>Admin Dashboard - Glamour</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
 
         :root {
             --primary-color: #333;
@@ -194,6 +195,46 @@
         }
         @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
 
+        /* Header Navigation Styles */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: auto;
+            padding: 0 1rem;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .btn-logout {
+            color: var(--danger-color);
+        }
+
         /* Floating Action Button */
         .fab-btn {
             position: fixed;
@@ -253,6 +294,17 @@
             cursor: pointer;
             color: #777;
         }
+
+        @media (max-width: 600px) {
+            .nav-text { display: none; }
+            .header h1 { font-size: 1.1rem; }
+            .nav-link { font-size: 1.2rem; padding: 0.4rem; }
+            .header-container { padding: 0 0.5rem; }
+            /* Ensure title doesn't overlap icons */
+            .header h1 {
+                margin-right: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -281,13 +333,19 @@
     </script>
 
     <header class="header">
-        <div style="display:flex; justify-content:space-between; align-items:center; max-width:800px; margin:auto; padding: 0 1rem;">
+        <div class="header-container">
             <h1 id="adminHeader">Reseller Admin</h1>
-            <div>
-                <a href="profile.html" style="margin-right: 1rem; text-decoration: none; color: var(--primary-color); font-weight: 600;">Profile</a>
-                <a href="settings.html" style="margin-right: 1rem; text-decoration: none; color: var(--primary-color); font-weight: 600;">Settings</a>
-                <button onclick="logout()" style="background:var(--danger-color); color:white; border:none; padding: 0.5rem 1rem; border-radius:5px; cursor:pointer; font-weight:600;">Logout</button>
-            </div>
+            <nav class="header-nav">
+                <a href="profile.html" class="nav-link" title="Profile">
+                    <i class="fas fa-user"></i> <span class="nav-text">Profile</span>
+                </a>
+                <a href="settings.html" class="nav-link" title="Settings">
+                    <i class="fas fa-cog"></i> <span class="nav-text">Settings</span>
+                </a>
+                <button onclick="logout()" class="nav-link btn-logout" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i> <span class="nav-text">Logout</span>
+                </button>
+            </nav>
         </div>
     </header>
 
