@@ -374,7 +374,6 @@
         <div class="header-container">
             <h1 id="adminHeader">Reseller Admin</h1>
             <nav class="header-nav">
-                <a href="index.html" class="nav-link" title="Dashboard">
                     <i class="fas fa-tachometer-alt"></i> <span class="nav-text">Dashboard</span>
                 </a>
                 <a href="profile.html" class="nav-link" title="Profile">
@@ -460,7 +459,7 @@
         //];
 
         // let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
-        window.location.href = 'dashboard.html';
+        window.location.href = 'product_list.html';
 
 
 
@@ -638,6 +637,7 @@
 
         // Display Username if set
         const savedUsername = localStorage.getItem('adminUsername');
+
 
         if (savedUsername) {
             document.getElementById('adminHeader').innerText = savedUsername + "'s Admin";
