@@ -79,6 +79,23 @@
             margin-top: 1rem;
             display: none;
         }
+        .btn-biometric {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--accent-color);
+            background: transparent;
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        .btn-biometric:hover {
+            background: var(--accent-color);
+            color: white;
+        }
         .forgot-password-link {
             display: block;
             margin-top: 1rem;
@@ -116,6 +133,9 @@
                 <input type="password" id="password" class="form-control" required>
             </div>
             <button type="submit" class="btn-login">Sign In</button>
+            <button type="button" onclick="loginWithBiometrics()" class="btn-biometric">
+                Login with Fingerprint 👆
+            </button>
             <p id="errorMsg" class="error-msg">Invalid credentials. Please try again.</p>
             <a href="#" onclick="forgotPassword(event)" class="forgot-password-link">Forgot Password?</a>
         </form>
@@ -160,6 +180,68 @@
                 alert(`Password recovery:\n\nYour password is: ${storedPassword}\n\nPlease store it securely.`);
             } else if (enteredEmail) {
                 alert("The email address you entered does not match our records.");
+            }
+        }
+
+        async function loginWithBiometrics() {
+            if (!window.PublicKeyCredential) {
+                alert("Biometrics not supported on this device/browser (must be HTTPS or localhost).");
+                return;
+            }
+
+            const challenge = new Uint8Array(32);
+            window.crypto.getRandomValues(challenge);
+
+            try {
+                const credential = await navigator.credentials.get({
+                    publicKey: {
+                        challenge: challenge,
+                        userVerification: "required"
+                    }
+                });
+
+                if (credential) {
+                    // Authentication successful
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    window.location.href = 'index.html';
+                }
+            } catch (e) {
+                // If no credentials found or cancelled
+                if (confirm("Biometric login failed or not set up. Do you want to register this device now? (You must enter your email/password above first)")) {
+                    registerBiometrics();
+                }
+            }
+        }
+
+        async function registerBiometrics() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const storedEmail = (localStorage.getItem('adminEmail') || 'admin@example.com').trim();
+            const storedPassword = localStorage.getItem('adminPassword') || 'admin123';
+
+            if (email.toLowerCase() !== storedEmail.toLowerCase() || password !== storedPassword) {
+                alert("Please enter your correct Email and Password in the form above to verify identity before registering biometrics.");
+                return;
+            }
+
+            const challenge = new Uint8Array(32);
+            window.crypto.getRandomValues(challenge);
+            const userId = Uint8Array.from(email, c => c.charCodeAt(0));
+
+            try {
+                await navigator.credentials.create({
+                    publicKey: {
+                        challenge: challenge,
+                        rp: { name: "Glamour Admin" },
+                        user: { id: userId, name: email, displayName: email },
+                        pubKeyCredParams: [{alg: -7, type: "public-key"}],
+                        authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                        timeout: 60000
+                    }
+                });
+                alert("Fingerprint registered successfully! You can now use the button to login.");
+            } catch (e) {
+                alert("Registration failed: " + e.message);
             }
         }
     </script>
