@@ -96,9 +96,10 @@
         }
 
         .product-image {
-            width: 100%;
+            width: 50%;
             height: 250px;
             object-fit: contain;
+            object-position: center;
         }
 
         .product-info {
@@ -179,6 +180,20 @@
             padding: 2rem 0;
             margin-top: 2rem;
         }
+        .admin-link {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            background-color: #007bff; /* Blue color */
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            display: block;
+            text-align: center;
+        }
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -194,6 +209,10 @@
             .product-image {
                 height: 150px;
             }
+
+            .admin-link {
+                padding: 0.5rem 1rem;
+            }
         }
 
     </style>
@@ -201,7 +220,14 @@
 <body>
 
     <script>
-        // Apply theme on page load
+        // Security Check
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+         }
+    </script>
+
+    <script>
+       // Apply theme on page load
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'pastel-teal') {
             const root = document.documentElement;
@@ -210,41 +236,32 @@
             root.style.setProperty('--accent-color', '#ffab91'); // Soft Coral/Peach
             root.style.setProperty('--bg-color', '#e0f2f1');
         }
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = 'login.html';
+        }
     </script>
 
-    <header class="main-header">
-        <div class="container">
-            <h1>Marilyn-<span>Pre-Orders</span></h1>
-        </div>
     </header>
 
     <main>
         <section class="hero">
-            <div class="container">
+           <div class="container">
                 <h2>Curated Beauty, Just For You</h2>
                 <p>Discover the next must-have beauty products. Pre-order your favorites today to help us bring them to the store!</p>
-
-                <div class="contact-buttons">
-                    <a href="https://wa.me/1234567890" target="_blank" class="contact-btn btn-whatsapp">WhatsApp</a>
-                    <a href="https://facebook.com/yourusername" target="_blank" class="contact-btn btn-facebook">Facebook</a>
-                </div>
-            </div>
+           </div>
         </section>
 
         <section class="product-section">
-            <div class="container">
+           <div class="container">
                 <div class="product-grid">
                     <!-- Product Card 1 (Example) -->
                     <article class="product-card">
-                        <!-- Change 'your-product-image.jpg' to the actual name of your file in the 'images' folder -->
                         <img src="images/Dreamscentz- 200g.webp" alt="PC White Dove" class="product-image">
                         <div class="product-info">
                             <h3>PC White Dove</h3>
                             <p>A lightweight, hydrating serum packed with Vitamin C to brighten your skin.</p>
-                            <button class="pre-order-btn">Pre-Order Now</button>
-                            <div class="share-links">
-                                <a href="https://www.facebook.com/sharer/sharer.php?u=https://your-new-site.netlify.app" target="_blank">Share on Facebook</a>
-                            </div>
                         </div>
                     </article>
 
@@ -254,10 +271,6 @@
                         <div class="product-info">
                             <h3>PC Soft Blue Germtec</h3>
                             <p>A long-lasting, highly pigmented lipstick in a stunning shade of ruby red.</p>
-                            <button class="pre-order-btn">Pre-Order Now</button>
-                            <div class="share-links">
-                                <a href="https://www.facebook.com/sharer/sharer.php?u=https://your-new-site.netlify.app" target="_blank">Share on Facebook</a>
-                            </div>
                         </div>
                     </article>
 
@@ -266,26 +279,25 @@
                         <img src="images/Front Sof - green naturals 1000ml.webp" alt="PC Soft Green Naturals" class="product-image">
                         <div class="product-info">
                             <h3>PC Soft Green Naturals</h3>
-                            <p>A rich, nourishing cream that provides all-day hydration for a soft, supple feel.</p>
-                            <button class="pre-order-btn">Pre-Order Now</button>
-                            <div class="share-links">
-                                <a href="https://www.facebook.com/sharer/sharer.php?u=https://your-new-site.netlify.app" target="_blank">Share on Facebook</a>
-                            </div>
-                        </div>
+                            <p>A rich, nourishing cream that provides all-day hydration for a soft, supple feel.</p>                            
                     </article>
 
                     <!-- Add more product cards here as you get new product ideas -->
 
                 </div>
-            </div>
+           </div>
         </section>
     </main>
 
     <footer class="main-footer">
-        <div class="container">
+       <div class="container">
             <p>&copy; 2026 Marilyn-Pre-Orders. All Rights Reserved.</p>
-        </div>
+       </div>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <a href="dashboard.html" class="admin-link"><i class="fas fa-tachometer-alt"></i>Admin Dashboard</a>
     </footer>
+    
 
 </body>
 
