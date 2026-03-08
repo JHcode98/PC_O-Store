@@ -67,7 +67,6 @@
             object-fit: cover;
             border-radius: 5px;
             border: 1px solid #eee;
-            cursor: zoom-in;
         }
 
         .product-info h3 {
@@ -247,7 +246,7 @@
             height: 60px;
             border-radius: 50%;
             border: none;
-            font-size: 2rem;
+            font-size: 1.5rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             cursor: pointer;
             display: flex;
@@ -294,45 +293,6 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: #777;
-        }
-
-        /* Image Zoom Modal Styles */
-        .zoom-modal {
-            display: none;
-            position: fixed;
-            z-index: 1003; /* Higher than other modals */
-            padding-top: 50px;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.9);
-        }
-
-        .zoom-modal-content {
-            margin: auto;
-            display: block;
-            width: 80%;
-            max-width: 700px;
-            animation-name: zoom-animation;
-            animation-duration: 0.6s;
-        }
-
-        @keyframes zoom-animation {
-            from {transform:scale(0)}
-            to {transform:scale(1)}
-        }
-
-        .close-zoom {
-            position: absolute;
-            top: 15px;
-            right: 35px;
-            color: #f1f1f1;
-            font-size: 40px;
-            font-weight: bold;
-            transition: 0.3s;
-            cursor: pointer;
         }
 
         @media (max-width: 600px) {
@@ -443,13 +403,7 @@
         </div>
     </div>
 
-    <!-- Image Zoom Modal -->
-    <div id="zoomModal" class="zoom-modal">
-        <span class="close-zoom" onclick="closeZoomModal()">&times;</span>
-        <img class="zoom-modal-content" id="zoomedImg">
-    </div>
-
-    <button class="fab-btn" onclick="openModal()">+</button>
+    <button class="fab-btn" onclick="openModal()"><i class="fas fa-plus"></i></button>
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
 
     <script>
@@ -491,15 +445,14 @@
                     </div>
                     <div style="display:flex; align-items:center;">
                         <a href="https://www.facebook.com/sharer/sharer.php?u=https://your-new-site.netlify.app" target="_blank" class="btn-fb">
-                            Post
+                            <i class="fas fa-share"></i> Post
                         </a>
-                        <button onclick="editProduct(${index})" class="btn-edit">Edit</button>
-                        <button onclick="deleteProduct(${index})" class="btn-delete">Delete</button>
+                        <button onclick="editProduct(${index})" class="btn-edit"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="deleteProduct(${index})" class="btn-delete"><i class="fas fa-trash-alt"></i> Delete</button>
                     </div>
-                `;
+                    `;
                 list.appendChild(item);
             });
-            initZoomListeners(); // Re-attach zoom listeners after render
         }
 
         // 3. Function to Save (Add or Update) a Product
@@ -584,27 +537,6 @@
                 renderProducts();
             }
         }
-
-        // 7. Image Zoom Functions
-        function initZoomListeners() {
-            const zoomModal = document.getElementById('zoomModal');
-            const zoomedImg = document.getElementById('zoomedImg');
-            document.querySelectorAll('.product-thumb').forEach(thumb => {
-                thumb.onclick = function(event) {
-                    event.stopPropagation(); // Prevent other click events
-                    zoomModal.style.display = 'block';
-                    zoomedImg.src = this.src;
-                }
-            });
-        }
-
-        function closeZoomModal() {
-            document.getElementById('zoomModal').style.display = 'none';
-        }
-
-        document.getElementById('zoomModal').addEventListener('click', function(event) {
-            if (event.target === this) closeZoomModal();
-        });
 
         // Initial Render
         renderProducts();
