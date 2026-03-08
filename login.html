@@ -125,8 +125,8 @@
         <p id="loginSubtext">Please sign in to manage your store.</p>
         <form onsubmit="handleLogin(event)">
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" class="form-control" required>
+                <label for="loginId">Email or Username</label>
+                <input type="text" id="loginId" class="form-control" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
@@ -151,15 +151,19 @@
 
         function handleLogin(event) {
             event.preventDefault(); // Prevent form from reloading the page
-            const email = document.getElementById('email').value.trim();
+            const loginInput = document.getElementById('loginId').value.trim();
             const password = document.getElementById('password').value;
             const errorMsg = document.getElementById('errorMsg');
 
             // Check localStorage for credentials, with defaults
             const storedEmail = (localStorage.getItem('adminEmail') || 'admin@example.com').trim();
+            const storedUsername = (localStorage.getItem('adminUsername') || '').trim();
             const storedPassword = localStorage.getItem('adminPassword') || 'admin123';
 
-            if (email.toLowerCase() === storedEmail.toLowerCase() && password === storedPassword) {
+            const isEmailMatch = loginInput.toLowerCase() === storedEmail.toLowerCase();
+            const isUsernameMatch = storedUsername && loginInput.toLowerCase() === storedUsername.toLowerCase();
+
+            if ((isEmailMatch || isUsernameMatch) && password === storedPassword) {
                 // Set a flag in session storage to indicate user is logged in
                 sessionStorage.setItem('isLoggedIn', 'true');
                 // Redirect to the admin dashboard
@@ -224,26 +228,31 @@
                 return;
             }
 
-            const email = document.getElementById('email').value.trim();
+            const loginInput = document.getElementById('loginId').value.trim();
             const password = document.getElementById('password').value;
             const storedEmail = (localStorage.getItem('adminEmail') || 'admin@example.com').trim();
+            const storedUsername = (localStorage.getItem('adminUsername') || '').trim();
             const storedPassword = localStorage.getItem('adminPassword') || 'admin123';
 
-            if (email.toLowerCase() !== storedEmail.toLowerCase() || password !== storedPassword) {
-                alert("Please enter your correct Email and Password in the form above to verify identity before registering biometrics.");
+            const isEmailMatch = loginInput.toLowerCase() === storedEmail.toLowerCase();
+            const isUsernameMatch = storedUsername && loginInput.toLowerCase() === storedUsername.toLowerCase();
+
+            if (!((isEmailMatch || isUsernameMatch) && password === storedPassword)) {
+                alert("Please enter your correct Email/Username and Password in the form above to verify identity before registering biometrics.");
                 return;
             }
 
             const challenge = new Uint8Array(32);
             window.crypto.getRandomValues(challenge);
-            const userId = Uint8Array.from(email, c => c.charCodeAt(0));
+            // IMPORTANT: The passkey user ID should be stable and tied to the canonical email.
+            const userId = Uint8Array.from(storedEmail, c => c.charCodeAt(0));
 
             try {
                 await navigator.credentials.create({
                     publicKey: {
                         challenge: challenge,
                         rp: { name: "Glamour Admin" },
-                        user: { id: userId, name: email, displayName: email },
+                        user: { id: userId, name: storedEmail, displayName: storedEmail },
                         pubKeyCredParams: [{alg: -7, type: "public-key"}],
                         authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
                         timeout: 60000
