@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Glamour</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+        :root {
+            --primary-color: #333;
+            --accent-color: #d4af37;
+            --bg-color: #f4f4f4;
+            --card-bg: #ffffff;
+            --facebook-blue: #1877F2;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding-bottom: 4rem; /* Space for FAB */
+            padding: 0;
+            color: var(--primary-color);
+        }
+
+        .header {
+            background: var(--card-bg);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+        }
+
+        .dashboard-item {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .dashboard-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .dashboard-item p {
+            font-size: 1rem;
+            color: #777;
+        }
+
+        /* Chart Styles (Basic) */
+        .chart-container {
+            margin-top: 2rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Navigation Styles */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: auto;
+            padding: 0 1rem;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .btn-logout {
+            color: var(--danger-color);
+        }
+
+        @media (max-width: 600px) {
+            .nav-text { display: none; }
+            .header h1 { font-size: 1.1rem; }
+            .nav-link { font-size: 1.2rem; padding: 0.4rem; }
+            .header-container { padding: 0 0.5rem; }
+            /* Ensure title doesn't overlap icons */
+            .header h1 {
+                margin-right: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+        <script>
+        // Apply theme on page load
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'pastel-teal') {
+            const root = document.documentElement;
+            root.style.setProperty('--primary-color', '#004d40'); // Dark Teal
+            root.style.setProperty('--secondary-color', '#e0f2f1'); // Light Teal BG
+            root.style.setProperty('--accent-color', '#ffab91'); // Soft Coral/Peach
+            root.style.setProperty('--bg-color', '#e0f2f1');
+        }
+
+        // Security Check: Redirect to login if not authenticated.
+        // This must be the very first thing in the body.
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <header class="header">
+        <div class="header-container">
+            <h1 id="adminHeader">Reseller Admin</h1>
+            <nav class="header-nav">
+                <a href="dashboard.html" class="nav-link" title="Dashboard">
+                    <i class="fas fa-tachometer-alt"></i> <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="index.html" class="nav-link" title="Home">
+                    <i class="fas fa-home"></i> <span class="nav-text">Home</span>
+                </a>
+                <a href="product_list.html" class="nav-link" title="Products">
+                    <i class="fas fa-list"></i> <span class="nav-text">Products</span>
+                </a>
+                <a href="profile.html" class="nav-link" title="Profile">
+                    <i class="fas fa-user"></i> <span class="nav-text">Profile</span>
+                </a>
+                <a href="settings.html" class="nav-link" title="Settings">
+                    <i class="fas fa-cog"></i> <span class="nav-text">Settings</span>
+                </a>
+                <button onclick="logout()" class="nav-link btn-logout" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i> <span class="nav-text">Logout</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Dashboard Section -->
+        <section class="dashboard">
+            <div class="dashboard-item">
+                <h3 id="totalProducts">Total Products</h3>
+                <p>Loading...</p>
+            </div>
+            <div class="dashboard-item">
+                <h3>In Stock</h3>
+                <p id="inStockCount">Loading...</p>
+            </div>
+            <div class="dashboard-item">
+                <h3>Low Stock</h3>
+                <p id="lowStockCount">Loading...</p>
+            </div>
+            <div class="dashboard-item">
+                <h3>Pre-Order</h3>
+                <p id="preOrderCount">Loading...</p>
+            </div>
+        </section>
+
+        <section class="chart-container">
+            <h2>Stock Level Summary</h2>
+            <canvas id="stockChart" width="400" height="200"></canvas>
+        </section>
+</div>
+</body>
+</html>
