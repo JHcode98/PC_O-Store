@@ -22,6 +22,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-color);
             margin: 0;
+            padding-bottom: 4rem; /* Space for FAB */
             padding: 0;
             color: var(--primary-color);
         }
@@ -31,6 +32,42 @@
             padding: 1rem;
             text-align: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+        }
+
+        .dashboard-item {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .dashboard-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .dashboard-item p {
+            font-size: 1rem;
+            color: #777;
+        }
+
+        /* Chart Styles (Basic) */
+        .chart-container {
+            margin-top: 2rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .container {
@@ -307,6 +344,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <script>
@@ -353,6 +391,32 @@
     </header>
 
     <div class="container">
+
+        <!-- Dashboard Section -->
+        <section class="dashboard">
+            <div class="dashboard-item">
+                <h3 id="totalProducts">Total Products</h3>
+                <p>Loading...</p>
+            </div>
+            <div class="dashboard-item">
+                <h3>In Stock</h3>
+                <p id="inStockCount">Loading...</p>
+            </div>
+            <div class="dashboard-item">
+                <h3>Low Stock</h3>
+                <p id="lowStockCount">Loading...</p>
+            </div>
+            <div class="dashboard-item">
+                <h3>Pre-Order</h3>
+                <p id="preOrderCount">Loading...</p>
+            </div>
+        </section>
+
+        <section class="chart-container">
+            <h2>Stock Level Summary</h2>
+            <canvas id="stockChart" width="400" height="200"></canvas>
+        </section>
+
         <!-- Add Product Form -->
         <div class="admin-controls">
             <button class="close-modal" onclick="closeModal()">&times;</button>
@@ -417,6 +481,7 @@
         let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 
         // 2. Function to display products
+        // 2. Function to display products and update dashboard
         function renderProducts() {
             const list = document.getElementById('productList');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -455,6 +520,44 @@
             });
         }
 
+        function updateDashboard() {
+            const totalProducts = products.length;
+            document.getElementById('totalProducts').innerText = totalProducts;
+
+            let inStock = 0, lowStock = 0, preOrder = 0;
+            products.forEach(product => {
+                if (product.status === 'In Stock') inStock++;
+                else if (product.status === 'Low Stock') lowStock++;
+                else if (product.status === 'Pre-Order') preOrder++;
+            });
+
+            document.getElementById('inStockCount').innerText = inStock;
+            document.getElementById('lowStockCount').innerText = lowStock;
+            document.getElementById('preOrderCount').innerText = preOrder;
+        }
+
+        // 3. Chart Logic (Basic)
+        function createChart() {
+            const ctx = document.getElementById('stockChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['In Stock', 'Low Stock', 'Pre-Order'],
+                    datasets: [{
+                        label: 'Number of Products',
+                        data: [parseInt(document.getElementById('inStockCount').innerText), parseInt(document.getElementById('lowStockCount').innerText), parseInt(document.getElementById('preOrderCount').innerText)],
+                        backgroundColor: ['#065f46', '#991b1b', '#92400e'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                }
+            });
+        }
+
+
+
         // 3. Function to Save (Add or Update) a Product
         function saveProduct() {
             const name = document.getElementById('prodName').value;
@@ -477,7 +580,9 @@
                 
                 localStorage.setItem('myProducts', JSON.stringify(products));
                 renderProducts();
+                updateDashboard();
                 resetForm();
+                createChart();
             } else {
                 alert("Please enter a name and image path");
             }
@@ -540,9 +645,16 @@
 
         // Initial Render
         renderProducts();
+        updateDashboard();
+
+                // Chart Logic (Basic)
+        function createChart() {
+
+        }
 
         // Display Username if set
         const savedUsername = localStorage.getItem('adminUsername');
+
         if (savedUsername) {
             document.getElementById('adminHeader').innerText = savedUsername + "'s Admin";
         }
