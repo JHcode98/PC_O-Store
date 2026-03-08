@@ -6,6 +6,7 @@
     <title>Admin Settings - Glamour</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
         :root {
             --primary-color: #333;
             --accent-color: #d4af37;
@@ -65,12 +66,52 @@
             font-weight: 600;
             width: 100%;
         }
-        .btn-back {
-            display: inline-block;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
+
+        /* Header Navigation Styles */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 600px;
+            margin: auto;
+            padding: 0 1rem;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
             text-decoration: none;
+            color: var(--primary-color);
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .btn-logout {
+            color: var(--danger-color);
+        }
+
+        @media (max-width: 600px) {
+            .nav-text { display: none; }
+            .header h1 { font-size: 1.1rem; }
+            .nav-link { font-size: 1.2rem; padding: 0.4rem; }
+            .header-container { padding: 0 0.5rem; }
         }
     </style>
 </head>
@@ -90,15 +131,34 @@
         if (sessionStorage.getItem('isLoggedIn') !== 'true') {
             window.location.href = 'login.html';
         }
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = 'login.html';
+        }
     </script>
 
     <header class="header">
-        <h1>Admin Settings</h1>
+        <div class="header-container">
+            <h1>Admin Settings</h1>
+            <nav class="header-nav">
+                <a href="index.html" class="nav-link" title="Dashboard">
+                    <i class="fas fa-tachometer-alt"></i> <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="profile.html" class="nav-link" title="Profile">
+                    <i class="fas fa-user"></i> <span class="nav-text">Profile</span>
+                </a>
+                <a href="settings.html" class="nav-link" title="Settings">
+                    <i class="fas fa-cog"></i> <span class="nav-text">Settings</span>
+                </a>
+                <button onclick="logout()" class="nav-link btn-logout" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i> <span class="nav-text">Logout</span>
+                </button>
+            </nav>
+        </div>
     </header>
 
     <div class="container">
-        <a href="index.html" class="btn-back">&larr; Back to Dashboard</a>
-        
         <div class="settings-card">
             <h2>Change Password</h2>
             <form onsubmit="changePassword(event)">
