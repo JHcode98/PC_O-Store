@@ -184,6 +184,11 @@
         }
 
         async function loginWithBiometrics() {
+            if (window.location.protocol === 'file:') {
+                alert("Security Alert: Biometric login (Fingerprint/FaceID) requires a secure server (HTTPS) or localhost.\n\nIt will not work when opening files directly from your folder.\n\nPlease use your Netlify link to test this feature.");
+                return;
+            }
+
             if (!window.PublicKeyCredential) {
                 alert("Biometrics not supported on this device/browser (must be HTTPS or localhost).");
                 return;
@@ -214,6 +219,11 @@
         }
 
         async function registerBiometrics() {
+            if (window.location.protocol === 'file:') {
+                alert("Security Alert: Biometric registration requires a secure server (HTTPS) or localhost.\n\nPlease use your Netlify link.");
+                return;
+            }
+
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const storedEmail = (localStorage.getItem('adminEmail') || 'admin@example.com').trim();
