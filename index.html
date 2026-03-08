@@ -390,29 +390,10 @@
         </div>
     </header>
 
-    <div class="container">
-
-        <!-- Dashboard Section -->
-        <section class="dashboard">
-            <div class="dashboard-item">
-                <h3 id="totalProducts">Total Products</h3>
-                <p>Loading...</p>
-            </div>
-            <div class="dashboard-item">
-                <h3>In Stock</h3>
-                <p id="inStockCount">Loading...</p>
-            </div>
-            <div class="dashboard-item">
-                <h3>Low Stock</h3>
-                <p id="lowStockCount">Loading...</p>
-            </div>
-            <div class="dashboard-item">
-                <h3>Pre-Order</h3>
-                <p id="preOrderCount">Loading...</p>
-            </div>
-        </section>
-
-        <section class="chart-container">
+    <div class="container" style="text-align:center;">
+        <h2>Admin Dashboard</h2>
+        <p>Redirecting to dashboard...</p>
+        <!-- <section class="chart-container">
             <h2>Stock Level Summary</h2>
             <canvas id="stockChart" width="400" height="200"></canvas>
         </section>
@@ -463,8 +444,8 @@
             <input type="text" id="searchInput" class="form-control" placeholder="Search products..." onkeyup="renderProducts()">
         </div>
         <div class="product-list" id="productList">
-            <!-- Products will be loaded here by JavaScript -->
-        </div>
+            Products will be loaded here by JavaScript
+        </div> -->
     </div>
 
     <button class="fab-btn" onclick="openModal()"><i class="fas fa-plus"></i></button>
@@ -472,16 +453,19 @@
 
     <script>
         // 1. Load products from LocalStorage or use default list
-        const defaultProducts = [
-            { name: "PC White Dove", price: "$15.00", description: "A lightweight, hydrating serum.", image: "images/Dreamscentz- 200g.webp", status: "In Stock" },
-            { name: "PC Soft Blue Germtec", price: "$18.00", description: "Long-lasting freshness.", image: "images/Front Sof - blue germtec 1000ml.webp", status: "Low Stock" },
-            { name: "PC Soft Green Naturals", price: "$20.00", description: "Rich nourishing cream.", image: "images/Front Sof - green naturals 1000ml.webp", status: "Pre-Order" }
-        ];
+        //const defaultProducts = [
+        //    { name: "PC White Dove", price: "$15.00", description: "A lightweight, hydrating serum.", image: "images/Dreamscentz- 200g.webp", status: "In Stock" },
+        //    { name: "PC Soft Blue Germtec", price: "$18.00", description: "Long-lasting freshness.", image: "images/Front Sof - blue germtec 1000ml.webp", status: "Low Stock" },
+        //    { name: "PC Soft Green Naturals", price: "$20.00", description: "Rich nourishing cream.", image: "images/Front Sof - green naturals 1000ml.webp", status: "Pre-Order" }
+        //];
 
-        let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
+        // let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
+        window.location.href = 'dashboard.html';
+
+
 
         // 2. Function to display products
-        // 2. Function to display products and update dashboard
+        /* // 2. Function to display products and update dashboard
         function renderProducts() {
             const list = document.getElementById('productList');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -645,7 +629,7 @@
 
         // Initial Render
         renderProducts();
-        updateDashboard();
+        updateDashboard(); */
 
                 // Chart Logic (Basic)
         function createChart() {
@@ -658,6 +642,7 @@
         if (savedUsername) {
             document.getElementById('adminHeader').innerText = savedUsername + "'s Admin";
         }
+    </script>
     </script>
 
 </body>
