@@ -268,6 +268,8 @@
             padding: 10px;
             border-radius: 5px;
             box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
         }
         
          #sidebarToggle.moved {
@@ -311,7 +313,9 @@
 
     <div class="sidebar">
         <ul>
+            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
             <li><a href="profile.html">Profile</a></li>
+             <li><a href="settings.html"><i class="fas fa-cog"></i>Settings</a></li>
             <li><a href="settings.html">Settings</a></li>
             <li><a href="#" onclick="logout()">Logout</a></li>
         </ul>
@@ -377,10 +381,14 @@
        
        <script>
             document.getElementById('sidebarToggle').addEventListener('click', function() {
-            const sidebar = document.querySelector('.sidebar');
-            const toggleButton = document.getElementById('sidebarToggle');
-            sidebar.classList.toggle('active');
-            toggleButton.classList.toggle('moved'); // Toggle the moved class
+                const sidebar = document.querySelector('.sidebar');
+                const toggleButton = document.getElementById('sidebarToggle');
+
+                // Toggle the sidebar's active class
+                sidebar.classList.toggle('active');
+
+                // Toggle the button's moved class
+                toggleButton.classList.toggle('moved');
             });
 
             document.addEventListener('click', function(event) {
