@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Glamour</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #333;
+            --accent-color: #d4af37;
+            --bg-color: #f4f4f4;
+            --card-bg: #ffffff;
+            --facebook-blue: #1877F2;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--primary-color);
+        }
+
+        .header {
+            background: var(--card-bg);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .product-item {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .product-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .product-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #eee;
+        }
+
+        .product-info h3 {
+            font-size: 1rem;
+            margin: 0 0 0.2rem 0;
+        }
+
+        .product-info p {
+            font-size: 0.85rem;
+            color: #777;
+            margin: 0;
+        }
+
+        .btn-fb {
+            background-color: var(--facebook-blue);
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem 1rem;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .btn-fb:hover {
+            background-color: #145dbf;
+        }
+
+        @media (max-width: 480px) {
+            .product-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .btn-fb {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Form Styles */
+        .admin-controls {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-add {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        
+        .btn-delete {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 1rem;
+        }
+
+        .btn-edit {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+        .status-in-stock { background-color: #d1fae5; color: #065f46; }
+        .status-low-stock { background-color: #fee2e2; color: #991b1b; }
+        .status-pre-order { background-color: #fef3c7; color: #92400e; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <script>
+        // Apply theme on page load
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'pastel-teal') {
+            const root = document.documentElement;
+            root.style.setProperty('--primary-color', '#004d40'); // Dark Teal
+            root.style.setProperty('--secondary-color', '#e0f2f1'); // Light Teal BG
+            root.style.setProperty('--accent-color', '#ffab91'); // Soft Coral/Peach
+            root.style.setProperty('--bg-color', '#e0f2f1');
+        }
+
+        // Security Check: Redirect to login if not authenticated.
+        // This must be the very first thing in the body.
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <header class="header">
+        <div style="display:flex; justify-content:space-between; align-items:center; max-width:800px; margin:auto; padding: 0 1rem;">
+            <h1 id="adminHeader">Reseller Admin</h1>
+            <div>
+                <a href="profile.html" style="margin-right: 1rem; text-decoration: none; color: var(--primary-color); font-weight: 600;">Profile</a>
+                <a href="settings.html" style="margin-right: 1rem; text-decoration: none; color: var(--primary-color); font-weight: 600;">Settings</a>
+                <button onclick="logout()" style="background:var(--danger-color); color:white; border:none; padding: 0.5rem 1rem; border-radius:5px; cursor:pointer; font-weight:600;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Add Product Form -->
+        <div class="admin-controls">
+            <h2 id="formTitle">Add New Product</h2>
+            <input type="hidden" id="editIndex" value="-1">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="prodName" class="form-control" placeholder="e.g. Luxury Lipstick">
+                </div>
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="text" id="prodPrice" class="form-control" placeholder="e.g. $25.00">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Image Filename</label>
+                    <input type="text" id="prodImage" class="form-control" placeholder="e.g. images/photo.jpg">
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="prodStatus" class="form-control">
+                        <option value="In Stock">In Stock</option>
+                        <option value="Pre-Order">Pre-Order</option>
+                        <option value="Low Stock">Low Stock</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="prodDesc" class="form-control" placeholder="Product details..."></textarea>
+            </div>
+
+            <button onclick="saveProduct()" id="saveBtn" class="btn-add">Add Product</button>
+            <button onclick="resetForm()" id="cancelBtn" style="display:none; width:100%; margin-top:0.5rem; padding:0.8rem; border:none; background:#999; color:white; border-radius:5px; cursor:pointer;">Cancel Edit</button>
+        </div>
+
+        <h2>Current Inventory</h2>
+        <div class="form-group">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search products..." onkeyup="renderProducts()">
+        </div>
+        <div class="product-list" id="productList">
+            <!-- Products will be loaded here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // 1. Load products from LocalStorage or use default list
+        const defaultProducts = [
+            { name: "PC White Dove", price: "$15.00", description: "A lightweight, hydrating serum.", image: "images/Dreamscentz- 200g.webp", status: "In Stock" },
+            { name: "PC Soft Blue Germtec", price: "$18.00", description: "Long-lasting freshness.", image: "images/Front Sof - blue germtec 1000ml.webp", status: "Low Stock" },
+            { name: "PC Soft Green Naturals", price: "$20.00", description: "Rich nourishing cream.", image: "images/Front Sof - green naturals 1000ml.webp", status: "Pre-Order" }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
+
+        // 2. Function to display products
+        function renderProducts() {
+            const list = document.getElementById('productList');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            list.innerHTML = ''; // Clear current list
+
+            products.forEach((product, index) => {
+                // Filter based on search term
+                if (!product.name.toLowerCase().includes(searchTerm)) return;
+
+                const item = document.createElement('div');
+                item.className = 'product-item';
+                
+                // Determine badge class
+                let badgeClass = 'status-in-stock';
+                if(product.status === 'Low Stock') badgeClass = 'status-low-stock';
+                if(product.status === 'Pre-Order') badgeClass = 'status-pre-order';
+
+                item.innerHTML = `
+                    <div class="product-details">
+                        <img src="${product.image}" alt="${product.name}" class="product-thumb">
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <p style="font-weight:600; color:var(--accent-color);">${product.price || ''}</p>
+                            <span class="status-badge ${badgeClass}">${product.status}</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center;">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=https://your-new-site.netlify.app" target="_blank" class="btn-fb">
+                            Post
+                        </a>
+                        <button onclick="editProduct(${index})" class="btn-edit">Edit</button>
+                        <button onclick="deleteProduct(${index})" class="btn-delete">Delete</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // 3. Function to Save (Add or Update) a Product
+        function saveProduct() {
+            const name = document.getElementById('prodName').value;
+            const price = document.getElementById('prodPrice').value;
+            const image = document.getElementById('prodImage').value;
+            const status = document.getElementById('prodStatus').value;
+            const description = document.getElementById('prodDesc').value;
+            const editIndex = parseInt(document.getElementById('editIndex').value);
+
+            if(name && image) {
+                const productData = { name, price, image, status, description };
+                
+                if(editIndex >= 0) {
+                    // Update existing
+                    products[editIndex] = productData;
+                } else {
+                    // Add new
+                    products.push(productData);
+                }
+                
+                localStorage.setItem('myProducts', JSON.stringify(products));
+                renderProducts();
+                resetForm();
+            } else {
+                alert("Please enter a name and image path");
+            }
+        }
+
+        // 4. Function to Edit a Product
+        function editProduct(index) {
+            const product = products[index];
+            document.getElementById('prodName').value = product.name;
+            document.getElementById('prodPrice').value = product.price || '';
+            document.getElementById('prodImage').value = product.image;
+            document.getElementById('prodStatus').value = product.status;
+            document.getElementById('prodDesc').value = product.description || '';
+            
+            document.getElementById('editIndex').value = index;
+            document.getElementById('formTitle').innerText = "Edit Product";
+            document.getElementById('saveBtn').innerText = "Update Product";
+            document.getElementById('cancelBtn').style.display = "block";
+            
+            // Scroll to top
+            window.scrollTo(0,0);
+        }
+
+        // 5. Reset Form
+        function resetForm() {
+            document.getElementById('prodName').value = '';
+            document.getElementById('prodPrice').value = '';
+            document.getElementById('prodImage').value = '';
+            document.getElementById('prodStatus').value = 'In Stock';
+            document.getElementById('prodDesc').value = '';
+            document.getElementById('editIndex').value = '-1';
+            
+            document.getElementById('formTitle').innerText = "Add New Product";
+            document.getElementById('saveBtn').innerText = "Add Product";
+            document.getElementById('cancelBtn').style.display = "none";
+        }
+
+        // 6. Function to Delete a Product
+        function deleteProduct(index) {
+            if(confirm('Are you sure you want to delete this product?')) {
+                products.splice(index, 1);
+                localStorage.setItem('myProducts', JSON.stringify(products));
+                renderProducts();
+            }
+        }
+
+        // Initial Render
+        renderProducts();
+
+        // Display Username if set
+        const savedUsername = localStorage.getItem('adminUsername');
+        if (savedUsername) {
+            document.getElementById('adminHeader').innerText = savedUsername + "'s Admin";
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings - Glamour</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        :root {
+            --primary-color: #333;
+            --accent-color: #d4af37;
+            --bg-color: #f4f4f4;
+            --card-bg: #ffffff;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--primary-color);
+        }
+        .header {
+            background: var(--card-bg);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .settings-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .btn-save {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+        }
+        .btn-back {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Apply theme on page load
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'pastel-teal') {
+            const root = document.documentElement;
+            root.style.setProperty('--primary-color', '#004d40'); // Dark Teal
+            root.style.setProperty('--secondary-color', '#e0f2f1'); // Light Teal BG
+            root.style.setProperty('--accent-color', '#ffab91'); // Soft Coral/Peach
+            root.style.setProperty('--bg-color', '#e0f2f1');
+        }
+
+        // Security Check
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <header class="header">
+        <h1>Admin Settings</h1>
+    </header>
+
+    <div class="container">
+        <a href="index.html" class="btn-back">&larr; Back to Dashboard</a>
+        
+        <div class="settings-card">
+            <h2>Change Password</h2>
+            <form onsubmit="changePassword(event)">
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPass" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" id="newPass" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirmPass" class="form-control" required>
+                </div>
+                <button type="submit" class="btn-save">Update Password</button>
+            </form>
+        </div>
+
+        <div class="settings-card" style="margin-top: 2rem;">
+            <h2>Theme Settings</h2>
+            <div class="form-group">
+                <label for="themeSelector">Select a Theme</label>
+                <select id="themeSelector" class="form-control" onchange="changeTheme(this.value)">
+                    <option value="default">Default (Gold)</option>
+                    <option value="pastel-teal">Pastel Teal</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changePassword(event) {
+            event.preventDefault();
+            
+            const currentPassInput = document.getElementById('currentPass').value;
+            const newPassInput = document.getElementById('newPass').value;
+            const confirmPassInput = document.getElementById('confirmPass').value;
+
+            // Get the actual current password (default is admin123)
+            const storedPassword = localStorage.getItem('adminPassword') || 'admin123';
+
+            if (currentPassInput !== storedPassword) {
+                alert("Incorrect current password!");
+                return;
+            }
+
+            if (newPassInput !== confirmPassInput) {
+                alert("New passwords do not match!");
+                return;
+            }
+
+            if (newPassInput.length < 4) {
+                alert("Password must be at least 4 characters long.");
+                return;
+            }
+
+            // Save new password
+            localStorage.setItem('adminPassword', newPassInput);
+            alert("Password updated successfully!");
+            
+            // Clear form
+            document.getElementById('currentPass').value = '';
+            document.getElementById('newPass').value = '';
+            document.getElementById('confirmPass').value = '';
+        }
+
+        function changeTheme(theme) {
+            localStorage.setItem('theme', theme);
+            applyTheme(theme);
+        }
+
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            if (theme === 'pastel-teal') {
+                root.style.setProperty('--primary-color', '#004d40'); // Dark Teal
+                root.style.setProperty('--secondary-color', '#e0f2f1'); // Light Teal BG
+                root.style.setProperty('--accent-color', '#ffab91'); // Soft Coral/Peach
+                root.style.setProperty('--bg-color', '#e0f2f1');
+            } else { // Default theme
+                root.style.setProperty('--primary-color', '#333');
+                root.style.setProperty('--secondary-color', '#f4f4f4');
+                root.style.setProperty('--accent-color', '#d4af37');
+                root.style.setProperty('--bg-color', '#f4f4f4');
+            }
+        }
+
+        // Set the dropdown to the currently saved theme on page load
+        const currentTheme = localStorage.getItem('theme') || 'default';
+        document.getElementById('themeSelector').value = currentTheme;
+    </script>
+</body>
+</html>
