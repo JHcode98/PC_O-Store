@@ -269,6 +269,11 @@
             border-radius: 5px;
             box-shadow: var(--shadow);
         }
+        
+         #sidebarToggle.moved {
+            left: 270px; /* Move to the right, clearing the sidebar */
+        }
+
     </style>
 </head>
 
@@ -372,11 +377,15 @@
        
        <script>
             document.getElementById('sidebarToggle').addEventListener('click', function() {
-                document.querySelector('.sidebar').classList.toggle('active');
+            const sidebar = document.querySelector('.sidebar');
+            const toggleButton = document.getElementById('sidebarToggle');
+            sidebar.classList.toggle('active');
+            toggleButton.classList.toggle('moved'); // Toggle the moved class
             });
 
             document.addEventListener('click', function(event) {
                 if (!event.target.closest('.sidebar') && !event.target.closest('#sidebarToggle')) {
+                     document.getElementById('sidebarToggle').classList.remove('moved');
                     document.querySelector('.sidebar').classList.remove('active');
                 }
             });
