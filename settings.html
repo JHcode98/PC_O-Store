@@ -34,6 +34,7 @@
         }
         .container {
             max-width: 600px;
+              margin-left: auto; /* Add this line */
             margin: 2rem auto;
             padding: 0 1rem;
         }
@@ -168,6 +169,7 @@
 
     <div class="sidebar">
         <ul>
+             <li><a href="index.html"><i class="fas fa-home"></i>Home</a></li>
             <li><a href="profile.html"><i class="fas fa-user"></i>Profile</a></li>
             <li><a href="settings.html">Settings</a></li>
             <li><a href="#" onclick="logout()">Logout</a></li>
@@ -277,16 +279,19 @@
       <script>
             document.getElementById('sidebarToggle').addEventListener('click', function() {
                 const sidebar = document.querySelector('.sidebar');
+                 const toggleButton = document.getElementById('sidebarToggle');
 
                 // Toggle the sidebar's active class
                 sidebar.classList.toggle('active');
+                 toggleButton.classList.toggle('moved');
             });
 
             document.addEventListener('click', function(event) {
-                if (!event.target.closest('.sidebar') && !event.target.closest('#sidebarToggle')) {
+                 if (!event.target.closest('.sidebar') && !event.target.closest('#sidebarToggle')) {
                     document.querySelector('.sidebar').classList.remove('active');
                 }
             });
         </script>
 </body>
+
 </html>
