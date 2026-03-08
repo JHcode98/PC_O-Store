@@ -208,17 +208,9 @@
     </script>
 
        <script>
-            document.getElementById('sidebarToggle').addEventListener('click', function() {
-                const sidebar = document.querySelector('.sidebar');
-                 const toggleButton = document.getElementById('sidebarToggle');
-
-                // Toggle the sidebar's active class
-                sidebar.classList.toggle('active');
-                toggleButton.classList.toggle('moved');
-            });
-
             document.addEventListener('click', function(event) {
-                 if (!event.target.closest('.sidebar') && !event.target.closest('#sidebarToggle')) {
+                const sidebar = document.querySelector('.sidebar');
+                if (!event.target.closest('.sidebar')) {
                     document.querySelector('.sidebar').classList.remove('active');
                 }
             });
